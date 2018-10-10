@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { interval, Observable, timer } from 'rxjs';
 import { Question } from './question.interface';
 import { take } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-root',
@@ -24,7 +25,7 @@ export class AppComponent {
 
   @ViewChild('mainWrapper') mainContainer: ElementRef;
 
-  constructor(private httpService: HttpClient) {
+  constructor(private httpService: HttpClient, public snackBar: MatSnackBar) {
     this.fetchQuestions();
   }
 
@@ -65,22 +66,26 @@ export class AppComponent {
       target.classList.add('wrong');
       this.answerMessage = 'Maybe next time, keep learning!!💪💪';
     }
+    this.snackBar.open(this.answerMessage,'', {
+      duration: this.TRANSITION_SECONDS*1000,
+    });
   }
 
   transitionToNextQuestion() {
     this.mainContainer.nativeElement.classList.add('hide');
-    
-    this.loadNextQuestion();
+    setTimeout(this.loadNextQuestion, 250);
   }
 
-  loadNextQuestion() {
+  loadNextQuestion = () => {
+    this.mainContainer.nativeElement.classList.remove('hide');
+    this.mainContainer.nativeElement.classList.add('show');
     this.answerMessage = '';
     if (this.questionIndex < this.questions.length) {
       this.currentQuestion = this.questions[
         ++this.questionIndex
       ];
     }
-  },
+  }
 
   get isGameOver() {
     return this.questionIndex === this.questions.length - 1;

@@ -1,5 +1,7 @@
 <div class="main-wrapper" #mainWrapper>
-
+  <div class="small-logo" *ngIf="!inWelcome">
+    <img src="./assets/img/angular.svg" alt="">
+  </div>
   <div class="welcome" *ngIf="inWelcome">
     <div class="logo">
       <img src="./assets/img/angular.svg" alt="">
@@ -17,15 +19,16 @@
       <li *ngFor="let option of currentQuestion.options">
         <button mat-button [disabled]="!!answerMessage" (click)="checkAnswer($event.target,option.isCorrect)">
           {{ option.answer }}
-          <!-- [disabled]="!!answerMessage" -->
+          <mat-icon class="correct">check</mat-icon>
+          <mat-icon class="wrong">close</mat-icon>
         </button>
       </li>
     </ol>
   </div>
 
   <div class="answer-wrapper" *ngIf="answerMessage">
-    <h4>{{answerMessage}}</h4>
-    <span>{{ countdown }}</span>
+    <h4>Next question...</h4>
+    <span class="countdown">{{ countdown }}</span>
   </div>
   <div *ngIf="currentQuestion && isGameOver">
     <h2>Game Over</h2>
