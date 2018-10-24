@@ -1,9 +1,10 @@
-import { Component, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
+import { CoreService } from "./core.service";
 import { HttpClient } from '@angular/common/http';
-import { interval, Observable, timer } from 'rxjs';
+import { interval, Observable, timer, Subject } from 'rxjs';
 import { Question } from './question.interface';
-import { take } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material';
+import { take, takeUntil } from 'rxjs/operators';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
 
 @Component({
   selector: 'app-root',
@@ -18,65 +19,71 @@ export class AppComponent {
   questionIndex = 0;
   inWelcome = true;
   correctAnswersCount = 0;
-  readonly QUESTION_SCORE = 3;
+  snackbarOptions: MatSnackBarConfig;
+  skipToNext$: Subject<any>;
   readonly COUNTDOWN_INTERVAL = 1000;
-  readonly TRANSITION_SECONDS = 5;
-  readonly QUESTION_API = './assets/questions.json';
+  readonly TRANSITION_SECONDS = 500;
+
 
   @ViewChild('mainWrapper') mainContainer: ElementRef;
 
-  constructor(private httpService: HttpClient, public snackBar: MatSnackBar) {
-    this.fetchQuestions();
+  constructor(public snackBar: MatSnackBar, private coreService: CoreService) {
+    this.skipToNext$ = new Subject();
   }
 
-  startApp() {
+  
+  startApp(): void {
     this.inWelcome = false;
+    this.loadQuestions();
+    this.setSnackBarConfig();
   }
 
-  fetchQuestions() {
-    this.httpService
-      .get(this.QUESTION_API)
-      .subscribe((questions: Question[]) => {
-        this.questions = questions.sort((a, b) =>  (0.5 - Math.random()));
-        this.currentQuestion = this.questions[this.questionIndex];
-        this.currentQuestion.options = this.currentQuestion.options.sort((a, b) => (0.5 - Math.random())); 
-      });
+  setSnackBarConfig(): void {
+    this.snackbarOptions = new MatSnackBarConfig();
+    this.snackbarOptions.verticalPosition = 'top';
+    this.snackbarOptions.horizontalPosition = 'right';
+    this.snackbarOptions.duration = this.TRANSITION_SECONDS * 1000;
+    this.snackbarOptions.panelClass = '';
   }
 
-  checkAnswer(target: HTMLElement, isCorrect: boolean) {
-    target =
-      target.nodeName === 'SPAN' ? target.parentElement : target;
+  loadQuestions(): void {
+    this.questions = this.coreService.questions.sort((a, b) => (0.5 - Math.random()));
+    this.currentQuestion = this.questions[this.questionIndex];
+    this.currentQuestion.options = this.currentQuestion.options.sort((a, b) => (0.5 - Math.random()));
+  }
 
+  checkAnswer(isCorrect: boolean): void {
     this.countdown = this.TRANSITION_SECONDS;
     interval(this.COUNTDOWN_INTERVAL)
-      .pipe(take(this.TRANSITION_SECONDS))
-      .subscribe(
+      .pipe(
+        take(this.TRANSITION_SECONDS),
+        takeUntil(this.skipToNext$)
+      ).subscribe(
         () => {
           this.countdown--;
         },
         null, // Error callback
         () => this.transitionToNextQuestion(),
-      );
+    );
 
     if (isCorrect) {
-      target.classList.add('correct');
       this.correctAnswersCount++;
-      this.answerMessage = 'That\'s correct. Congratulations!! 🎇 🤗 🎆';
+      this.snackbarOptions.panelClass = 'correct';
+      this.answerMessage = 'That\'s correct. Congratulations!!  🤗🎆';
     } else {
-      target.classList.add('wrong');
-      this.answerMessage = 'Maybe next time, keep learning!!💪💪';
+      this.snackbarOptions.panelClass = 'wrong';
+      this.answerMessage = 'Maybe next time, keep learning!! 💪💪';
     }
-    this.snackBar.open(this.answerMessage,'', {
-      duration: this.TRANSITION_SECONDS*1000,
-    });
+    this.snackBar.open(this.answerMessage, '', this.snackbarOptions);
   }
 
-  transitionToNextQuestion() {
+  transitionToNextQuestion(): void {
+    this.snackBar.dismiss();
     this.mainContainer.nativeElement.classList.add('hide');
-    setTimeout(this.loadNextQuestion, 250);
+    setTimeout(this.loadNextQuestion, 250); // timeout applied to sync with CSS animation
   }
 
-  loadNextQuestion = () => {
+  loadNextQuestion = ():void => {
     this.mainContainer.nativeElement.classList.remove('hide');
     this.mainContainer.nativeElement.classList.add('show');
     this.answerMessage = '';
@@ -84,14 +91,27 @@ export class AppComponent {
       this.currentQuestion = this.questions[
         ++this.questionIndex
       ];
+    } else {
+      ++this.questionIndex;
     }
   }
 
-  get isGameOver() {
-    return this.questionIndex === this.questions.length - 1;
+  skipToNextQuestion():void {
+    this.skipToNext$.next();
   }
 
-  get finalScore() {
-    return this.correctAnswersCount * this.QUESTION_SCORE;
+  resetApp():void {
+    this.correctAnswersCount = 0;
+    this.questionIndex = 0;
+    this.loadQuestions();
+    this.inWelcome = true;
+  }
+
+  get isGameOver(): boolean {
+    return this.questionIndex === this.questions.length;
+  }
+
+  get finalScore(): number {
+    return this.correctAnswersCount;
   }
 }

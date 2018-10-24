@@ -1,0 +1,97 @@
+/********************************************/
+
+$title-color: #FFF;
+;
+$button-color: #5096C0;
+$button-background-color: rgba(255, 255, 255, 0.05);
+$correct-color: rgba(214, 2, 238, 0.75);
+$wrong-color: rgba(229, 67, 4, 0.75);
+/********************************************/
+
+h3 {
+  font-size: 36px;
+  text-align: center;
+  margin-bottom: 100px;
+  letter-spacing: 0.015em;
+  color: $title-color;
+  font-weight: normal;
+  @media (max-width: 768px) {
+    font-size: 26px;
+    margin-bottom: 0;
+  }
+  @media (max-width: 500px) {
+    font-size: 24px;
+  }
+}
+
+ol {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-column-gap: 30px;
+  grid-row-gap: 60px;
+  justify-items: stretch;
+  padding: 0;
+  @media (max-width: 780px) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: strech;
+  }
+  li {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    @media (max-width: 780px) {
+      margin-top: 20px; 
+    }
+    button {
+      flex: 1 1 auto;
+      font-size: 20px;
+      min-height: 40px;
+      margin: 0;
+      white-space: normal;
+      line-height: 26px;
+      padding: 20px 48px 20px 40px;
+      background-color: $button-background-color;
+      color: $button-color;
+      
+      @media (max-width: 500px) {
+        font-size: 18px;
+        line-height: 20px;
+        padding: 10px 48px 10px 40px;
+      }
+
+      mat-icon {
+        display: none;
+        padding: 5px;
+        position: absolute;
+        top: 0px;
+        bottom: 0;
+        right: 0;
+        height: 100%;
+        width: 40px;
+        font-weight: bold;
+        align-items: center;
+        justify-content: center;
+        color: #FFF;
+        border-radius: 0 2px 2px 0;
+      }
+      &.correct {
+        mat-icon.correct {
+          display: flex;
+          background-color: $correct-color;
+          color: #FFF;
+        }
+      }
+      &.wrong {
+        mat-icon.wrong {
+          display: flex;
+          background-color: $wrong-color;
+          color: #FFF;
+        }
+      }
+    }
+  }
+}
