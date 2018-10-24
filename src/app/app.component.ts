@@ -22,7 +22,7 @@ export class AppComponent {
   snackbarOptions: MatSnackBarConfig;
   skipToNext$: Subject<any>;
   readonly COUNTDOWN_INTERVAL = 1000;
-  readonly TRANSITION_SECONDS = 500;
+  readonly TRANSITION_SECONDS = 5;
 
 
   @ViewChild('mainWrapper') mainContainer: ElementRef;
