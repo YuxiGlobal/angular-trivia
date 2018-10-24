@@ -10,7 +10,7 @@ import { take } from 'rxjs/operators';
 export class CoreService {
 
   loadedQuestions: Question[];  
-  readonly QUESTION_API = './assets/mockQuestions.json';
+  readonly QUESTION_API = './assets/questions.json';
 
   constructor(private httpService: HttpClient) {
     this.fetchQuestions();
