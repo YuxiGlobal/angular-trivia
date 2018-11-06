@@ -1,22 +1,37 @@
-<div *ngIf="currentQuestion && !isGameOver">
-  <h3>{{currentQuestion.question}}</h3>
-  <ol>
-    <li *ngFor="let option of currentQuestion.options">
-      <button mat-raised-button
-              [disabled]="!!answerMessage"
-              color="primary"
-              (click)="checkAnswer($event.target,option.isCorrect)">
-        {{ option.answer }}
-        <!-- [disabled]="!!answerMessage" -->
-      </button>
-    </li>
-  </ol>
-  <ng-container *ngIf="answerMessage">
-    <h4>Your answer is: {{answerMessage}}</h4>
-    <span>{{ countdown }}</span>
-  </ng-container>
+<div class="main-wrapper" #mainWrapper>
+  <div class="small-logo" *ngIf="!inWelcome">
+    <img src="./assets/img/angular.svg" alt="">
+  </div>
+  <div class="welcome" *ngIf="inWelcome">
+    <div class="logo">
+      <img src="./assets/img/angular.svg" alt="">
+    </div>
+    <div class="text">
+      <h2>Welcome to <br> Angular trivia</h2>
+      <p><button mat-button (click)="startApp()">Start <mat-icon>arrow_forward</mat-icon></button></p>
+    </div>
+  </div>
+
+  <div class="question-wrapper" *ngIf="currentQuestion && !isGameOver && !inWelcome">
+    <app-question [currentQuestion]="currentQuestion" [disabled]="!!answerMessage" (answer)="checkAnswer($event)"></app-question>
+  </div>
+
+  <div class="next-question-controls" *ngIf="answerMessage">
+    <h3>Next question...</h3>
+    <span class="countdown">{{ countdown }}</span>
+    <button mat-button (click)="skipToNextQuestion()">Skip <mat-icon>arrow_forward</mat-icon></button>
+  </div>
+  <div class="results" *ngIf="!inWelcome && isGameOver">
+    <ng-container *ngIf="finalScore >= questions.length * 0.7 else keepLearning">
+      <h2>🙌🙌</h2>
+      <h3>Well done!!</h3>
+    </ng-container>
+    <h3>Correct answers:</h3>
+    <h3>{{finalScore}} of {{questions.length}}</h3>
+    <button mat-button (click)="resetApp()">Play Again <mat-icon>cached</mat-icon></button>
+  </div>
 </div>
-<div *ngIf="currentQuestion && isGameOver">
-  <h2>Game Over</h2>
-  <h3>Your score is: {{finalScore}}</h3>
-</div>
+<ng-template #keepLearning>
+  <h3>Keep going, we still have some things to learn!!</h3>
+  <h2>💪💪</h2>
+</ng-template>

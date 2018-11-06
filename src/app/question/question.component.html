@@ -1,0 +1,10 @@
+<h3>{{currentQuestion.question}}</h3>
+<ol>
+  <li *ngFor="let option of currentQuestion.options">
+    <button mat-button [disabled]="disabled" (click)="answerSelected($event.target,option.isCorrect)">
+      {{ option.answer }}
+      <mat-icon class="correct">check</mat-icon>
+      <mat-icon class="wrong">close</mat-icon>
+    </button>
+  </li>
+</ol>
