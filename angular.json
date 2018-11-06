@@ -129,5 +129,8 @@
       }
     }
   },
-  "defaultProject": "angular-trivia"
+  "defaultProject": "angular-trivia",
+  "cli": {
+    "packageManager": "yarn"
+  }
 }
