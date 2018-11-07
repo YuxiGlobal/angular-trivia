@@ -1,6 +1,5 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { CoreService } from "./core.service";
-import { HttpClient } from '@angular/common/http';
 import { interval, Observable, timer, Subject } from 'rxjs';
 import { Question } from './question.interface';
 import { take, takeUntil } from 'rxjs/operators';
@@ -19,23 +18,28 @@ export class AppComponent {
   questionIndex = 0;
   inWelcome = true;
   correctAnswersCount = 0;
+  questionScore: number;
+  totalScore = 0;
   snackbarOptions: MatSnackBarConfig;
   skipToNext$: Subject<any>;
+  answerSelected$: Subject<any>;
   readonly COUNTDOWN_INTERVAL = 1000;
   readonly TRANSITION_SECONDS = 5;
-
-
+  readonly MAX_POINTS_PER_QUESTION = 10000;
+  readonly PENALIZATION_POINTS = 20;
+  readonly TIME_PENALIZATION_INTERVAL = 10;
+  readonly MINIMUM_QUESTION_SCORE = 30;
   @ViewChild('mainWrapper') mainContainer: ElementRef;
 
   constructor(public snackBar: MatSnackBar, private coreService: CoreService) {
     this.skipToNext$ = new Subject();
+    this.answerSelected$ = new Subject();
   }
 
-  
   startApp(): void {
     this.inWelcome = false;
-    this.loadQuestions();
     this.setSnackBarConfig();
+    this.loadQuestions();
   }
 
   setSnackBarConfig(): void {
@@ -47,12 +51,14 @@ export class AppComponent {
   }
 
   loadQuestions(): void {
-    this.questions = this.coreService.questions.sort((a, b) => (0.5 - Math.random()));
+    this.questions = this.coreService.questions.sort((a, b) => (0.5 - Math.random())).slice(0, 10);
     this.currentQuestion = this.questions[this.questionIndex];
     this.currentQuestion.options = this.currentQuestion.options.sort((a, b) => (0.5 - Math.random()));
+    this.resetScore();
   }
 
   checkAnswer(isCorrect: boolean): void {
+    this.answerSelected$.next();
     this.countdown = this.TRANSITION_SECONDS;
     interval(this.COUNTDOWN_INTERVAL)
       .pipe(
@@ -64,10 +70,11 @@ export class AppComponent {
         },
         null, // Error callback
         () => this.transitionToNextQuestion(),
-    );
+      );
 
     if (isCorrect) {
       this.correctAnswersCount++;
+      this.totalScore += this.questionScore;
       this.snackbarOptions.panelClass = 'correct';
       this.answerMessage = 'That\'s correct. Congratulations!!  🤗🎆';
     } else {
@@ -83,7 +90,7 @@ export class AppComponent {
     setTimeout(this.loadNextQuestion, 250); // timeout applied to sync with CSS animation
   }
 
-  loadNextQuestion = ():void => {
+  loadNextQuestion = (): void => {
     this.mainContainer.nativeElement.classList.remove('hide');
     this.mainContainer.nativeElement.classList.add('show');
     this.answerMessage = '';
@@ -91,27 +98,46 @@ export class AppComponent {
       this.currentQuestion = this.questions[
         ++this.questionIndex
       ];
+      if (typeof(this.currentQuestion) !== 'undefined') {
+        this.currentQuestion.options = this.currentQuestion.options.sort((a, b) => (0.5 - Math.random()));
+      }
     } else {
       ++this.questionIndex;
     }
+    this.resetScore();
   }
 
-  skipToNextQuestion():void {
+  resetScore(): void {
+    this.questionScore = this.MAX_POINTS_PER_QUESTION;
+    interval(this.TIME_PENALIZATION_INTERVAL).
+      pipe(
+        takeUntil(this.answerSelected$)
+      ).subscribe(() => {
+        if (this.questionScore > this.MINIMUM_QUESTION_SCORE) {
+          this.questionScore -= this.PENALIZATION_POINTS;
+        } else if (this.questionScore !== this.MINIMUM_QUESTION_SCORE) {
+          this.questionScore = this.MINIMUM_QUESTION_SCORE;
+        }
+      });
+  }
+
+  skipToNextQuestion(): void {
     this.skipToNext$.next();
   }
 
-  resetApp():void {
+  resetApp(): void {
     this.correctAnswersCount = 0;
+    this.totalScore = 0;
     this.questionIndex = 0;
     this.loadQuestions();
     this.inWelcome = true;
   }
 
-  get isGameOver(): boolean {
-    return this.questionIndex === this.questions.length;
+  get showQuestion(): boolean {
+    return this.currentQuestion && !this.isGameOver && !this.inWelcome
   }
 
-  get finalScore(): number {
-    return this.correctAnswersCount;
+  get isGameOver(): boolean {
+    return this.questionIndex === this.questions.length;
   }
 }
