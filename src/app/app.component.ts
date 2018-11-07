@@ -1,9 +1,11 @@
+import { FormDialogComponent } from './form-dialog/form-dialog.component';
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { CoreService } from "./core.service";
 import { interval, Observable, timer, Subject } from 'rxjs';
 import { Question } from './question.interface';
 import { take, takeUntil } from 'rxjs/operators';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import {MatDialog, MAT_DIALOG_DATA} from '@angular/material';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +33,7 @@ export class AppComponent {
   readonly MINIMUM_QUESTION_SCORE = 30;
   @ViewChild('mainWrapper') mainContainer: ElementRef;
 
-  constructor(public snackBar: MatSnackBar, private coreService: CoreService) {
+  constructor(public snackBar: MatSnackBar, private coreService: CoreService, public dialog: MatDialog) {
     this.skipToNext$ = new Subject();
     this.answerSelected$ = new Subject();
   }
@@ -51,7 +53,7 @@ export class AppComponent {
   }
 
   loadQuestions(): void {
-    this.questions = this.coreService.questions.sort((a, b) => (0.5 - Math.random())).slice(0, 10);
+    this.questions = this.coreService.questions.sort((a, b) => (0.5 - Math.random())).slice(0, 2);
     this.currentQuestion = this.questions[this.questionIndex];
     this.currentQuestion.options = this.currentQuestion.options.sort((a, b) => (0.5 - Math.random()));
     this.resetScore();
@@ -140,5 +142,17 @@ export class AppComponent {
 
   get isGameOver(): boolean {
     return this.questionIndex === this.questions.length;
+  }
+
+  saveUserScore() {
+    this.dialog.open(FormDialogComponent, {
+      data: {
+        score: this.totalScore
+      }
+    });
+  }
+
+  getScores() {
+    this.coreService.loadScores().subscribe(result => console.log(result))
   }
 }
