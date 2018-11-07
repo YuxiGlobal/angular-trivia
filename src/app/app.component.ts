@@ -155,4 +155,5 @@ export class AppComponent {
   getScores() {
     this.coreService.loadScores().subscribe(result => console.log(result))
   }
+  
 }
