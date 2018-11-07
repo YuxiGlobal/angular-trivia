@@ -26,8 +26,8 @@ export class AppComponent {
   readonly COUNTDOWN_INTERVAL = 1000;
   readonly TRANSITION_SECONDS = 5;
   readonly MAX_POINTS_PER_QUESTION = 10000;
-  readonly PENALIZATION_POINTS = 20;
-  readonly TIME_PENALIZATION_INTERVAL = 10;
+  readonly PENALIZATION_POINTS = 5;
+  readonly TIME_PENALIZATION_INTERVAL = 20;
   readonly MINIMUM_QUESTION_SCORE = 30;
   @ViewChild('mainWrapper') mainContainer: ElementRef;
 
@@ -99,12 +99,12 @@ export class AppComponent {
         ++this.questionIndex
       ];
       if (typeof(this.currentQuestion) !== 'undefined') {
+        this.resetScore();
         this.currentQuestion.options = this.currentQuestion.options.sort((a, b) => (0.5 - Math.random()));
       }
     } else {
       ++this.questionIndex;
     }
-    this.resetScore();
   }
 
   resetScore(): void {
@@ -118,6 +118,7 @@ export class AppComponent {
         } else if (this.questionScore !== this.MINIMUM_QUESTION_SCORE) {
           this.questionScore = this.MINIMUM_QUESTION_SCORE;
         }
+        
       });
   }
 
