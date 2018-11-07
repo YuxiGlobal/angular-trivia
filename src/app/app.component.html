@@ -12,7 +12,11 @@
     </div>
   </div>
 
-  <div class="question-wrapper" *ngIf="currentQuestion && !isGameOver && !inWelcome">
+  <div *ngIf="showQuestion" class="question-counter">
+    {{this.questionIndex + 1}} / {{this.questions.length}}
+  </div>
+
+  <div class="question-wrapper" *ngIf="showQuestion">
     <app-question [currentQuestion]="currentQuestion" [disabled]="!!answerMessage" (answer)="checkAnswer($event)"></app-question>
   </div>
 
@@ -22,16 +26,16 @@
     <button mat-button (click)="skipToNextQuestion()">Skip <mat-icon>arrow_forward</mat-icon></button>
   </div>
   <div class="results" *ngIf="!inWelcome && isGameOver">
-    <ng-container *ngIf="finalScore >= questions.length * 0.7 else keepLearning">
+    <ng-container *ngIf="correctAnswersCount >= questions.length * 0.7 else keepLearning">
       <h2>🙌🙌</h2>
       <h3>Well done!!</h3>
     </ng-container>
-    <h3>Correct answers:</h3>
-    <h3>{{finalScore}} of {{questions.length}}</h3>
+    <h3>Your score: <span class="highlight">{{totalScore | number}}</span></h3>
+    <h3>Correct answers: <span class="highlight">{{correctAnswersCount}}</span></h3>
     <button mat-button (click)="resetApp()">Play Again <mat-icon>cached</mat-icon></button>
   </div>
 </div>
 <ng-template #keepLearning>
-  <h3>Keep going, we still have some things to learn!!</h3>
+  <h3>Keep going, we still have some things to learn !!</h3>
   <h2>💪💪</h2>
 </ng-template>

@@ -1,10 +1,12 @@
 $text-color: #FFFFFF;
 $correct-color: rgba(214, 2, 238, 0.9);
 $wrong-color: rgba(229, 67, 4, 0.9);
+$highlighted-text-color: #5096C0;
+
 @mixin custom-button($font-size) {
   font-size: $font-size;
   padding: 14px 20px;
-  color: #5096C0;
+  color: $highlighted-text-color;
   border-radius: 10px;
 }
 
@@ -96,6 +98,14 @@ $wrong-color: rgba(229, 67, 4, 0.9);
   @media (max-width: 500px) {
     padding-top: 5px;
   }
+  .question-counter {
+    font-size: 18px;
+    position: absolute;
+    letter-spacing: 0.012em;
+    color: $highlighted-text-color;
+    top: 2%;
+    right: 2%;
+  }
   .question-wrapper {
     max-width: 94%;
     @media (min-width: 1200px) {
@@ -110,13 +120,13 @@ $wrong-color: rgba(229, 67, 4, 0.9);
     width: 100%;
     align-items: center;
     padding: 0 80px;
-    color: #FFF;
+    color: $text-color;
     font-size: 1.1em;
     span {
       margin-left: 20px;
       border-radius: 200px;
       color: #000;
-      background-color: #FFF;
+      background-color: $text-color;
       padding: 2px 8px;
     }
     button.mat-button {
@@ -159,12 +169,13 @@ $wrong-color: rgba(229, 67, 4, 0.9);
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: #FFF;
+  color: $text-color;
   font-size: 1.3em;
   text-align: center;
   line-height: 1.4;
   h2 {
-    font-size: 1.9em;
+    font-size: 3em;
+    margin: 0.3em 0;
   }
   h3 {
     font-weight: normal;
@@ -172,6 +183,13 @@ $wrong-color: rgba(229, 67, 4, 0.9);
   button {
     @include custom-button(26px);
     margin-top: 5%;
+  }
+  .highlight {
+    font-size: 1.1em;
+    color: $highlighted-text-color;
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: middle;
   }
 }
 
@@ -186,19 +204,6 @@ $wrong-color: rgba(229, 67, 4, 0.9);
   }
 }
 
-@keyframes neonBlink {
-  0% {
-    transform: translatey(0px);
-  }
-  50% {
-    transform: translatey(-5px);
-  }
-  100% {
-    transform: translatey(-10px);
-    filter: drop-shadow(0px 0px 6px rgba(255, 255, 255, 1))
-  }
-}
-
 @keyframes slideOut {
   0% {
     transform: translatex(0px);
@@ -210,24 +215,6 @@ $wrong-color: rgba(229, 67, 4, 0.9);
   }
   100% {
     transform: translatex(-110vw);
-  }
-}
-
-@keyframes fadeOut {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
   }
 }
 
