@@ -1,0 +1,77 @@
+/********************************************/
+$title-color: #FFF;
+$text-color: #8fcdf3;
+$highlighted-text-color: #5096C0;
+/********************************************/
+
+button {
+  position: fixed;
+  bottom: 2%;
+  right: 1%;
+  font-size: 18px;
+  padding: 9px 14px;
+  color: $highlighted-text-color;
+  border-radius: 10px;
+  opacity: 0.4;
+  transition: opacity 300ms;
+  &:hover {
+    transition: opacity 300ms;
+    opacity: 0.9;
+  }
+  @media (max-width: 768px) {
+    opacity: 0.9;
+  }
+}
+
+img.logo {
+  display: block;
+  width: 80%;
+  filter: drop-shadow(0px 0px 3px white);
+  opacity: 0.06;
+  position: fixed;
+  max-width: 80%;
+  top: 0;
+  left: 10%;
+  max-height: 100vh;
+  z-index: 0;
+}
+
+.title {
+  padding-top: 2%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: $title-color;
+  font-size: 1.4em;
+  .emojis {
+    font-size: 0.65em;
+  }
+}
+
+.scores {
+  max-width: 1000px;
+  width: 86%;
+  margin: 0 auto;
+  .item {
+    display: flex;
+    justify-content: space-between;
+    color: $text-color;
+    max-width: 100%;
+    font-size: 1.4em;
+    .name {
+      flex: 1 0 auto;
+      position: relative;
+      clip-path: polygon(0 0, calc(100% - 2px) 0, calc(100% - 2px) 100%, 0 100%);
+      &:after {
+        content: '  ...................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................';
+        overflow: hidden;
+        letter-spacing: 0.2em;
+        position: absolute;
+        max-width: 100%;
+      }
+    }
+    .score {
+      flex: 0 0 0;
+    }
+  }
+}

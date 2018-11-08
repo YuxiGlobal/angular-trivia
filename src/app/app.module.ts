@@ -1,17 +1,21 @@
+import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-import { MatButtonModule, MatIconModule, MatSnackBarModule, MatDialogModule, MatInputModule } from '@angular/material';
-import { NgModule } from '@angular/core';
-import { QuestionComponent } from './question/question.component';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule, MatIconModule, MatSnackBarModule, MatDialogModule, MatInputModule } from '@angular/material';
 import { AngularFireModule } from "@angular/fire";
 import { AngularFirestoreModule } from "@angular/fire/firestore";
+
+import { AppRoutingModule } from './app-routing.module';
+import { MainComponent } from './main/main.component';
+import { QuestionComponent } from './main/question/question.component';
 import { FormDialogComponent } from './form-dialog/form-dialog.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
-  declarations: [AppComponent, QuestionComponent, FormDialogComponent],
+  declarations: [AppComponent, QuestionComponent, FormDialogComponent, DashboardComponent, MainComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -30,7 +34,8 @@ import { FormDialogComponent } from './form-dialog/form-dialog.component';
       storageBucket: "angulartriviayuxi.appspot.com",
       messagingSenderId: "223543897397"
     }),
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    AppRoutingModule
   ],
   entryComponents:[FormDialogComponent],
   providers: [],

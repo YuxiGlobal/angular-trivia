@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { interval, Observable, timer } from 'rxjs';
-import { Question } from './question.interface';
+import { Observable } from 'rxjs';
+import { Question } from './../models/question.interface';
 import { AngularFirestore } from "@angular/fire/firestore";
 @Injectable({
   providedIn: 'root'
 })
 export class CoreService {
 
-  loadedQuestions: Question[];  
+  loadedQuestions: Question[];
+  private _alreadyPLayed: boolean;
   readonly QUESTION_API = './assets/questions.json';
 
   constructor(private httpService: HttpClient, private fireStore: AngularFirestore) {
@@ -21,6 +22,14 @@ export class CoreService {
       .subscribe((questions: Question[]) => {
         this.loadedQuestions = questions;
       });
+  }
+
+  set userHasPlayed(value: boolean) {
+    this._alreadyPLayed = value;
+  }
+
+  get userHasPlayed() {
+    return this._alreadyPLayed;
   }
 
   get questions():Question[] { 
