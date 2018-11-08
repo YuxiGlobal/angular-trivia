@@ -1,0 +1,23 @@
+<div class="wrapper">
+
+  <button mat-raised-button (click)="resetApp()">
+    <ng-container *ngIf="userHasAlreadyPlayed; else justPlay">Play Again <mat-icon>cached</mat-icon></ng-container>
+  </button>
+
+  <ng-template #justPlay>
+      Play <mat-icon>extension</mat-icon>
+  </ng-template>
+
+  <img class="logo" src="./assets/img/angular.svg" alt="">
+  <div class="title">
+    <h1><span class="emojis">🚀🚀</span>&nbsp;&nbsp; Angular Trivia Leaderboard &nbsp;&nbsp;<span class="emojis">🚀🚀</span></h1>
+  </div>
+
+  <div class="scores">
+    <div class="item" *ngFor="let score of scores | async">
+        <h3 class="name">{{score.username}}&nbsp;&nbsp;</h3>
+        <h3 class="score">{{score.score | number}}</h3>
+    </div>
+  </div>
+
+</div>

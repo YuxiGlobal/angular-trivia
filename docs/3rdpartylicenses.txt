@@ -335,17 +335,6 @@ Apache-2.0
 @angular/core
 MIT
 
-@angular/fire/firestore
-MIT
-
-@angular/common
-MIT
-
-@angular/fire
-MIT
-
-firebase/firestore
-
 @angular/animations
 MIT
 
@@ -374,6 +363,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
+@angular/common
+MIT
+
 @angular/platform-browser
 MIT
 
@@ -383,12 +375,23 @@ MIT
 
 @angular/material/dialog
 
+@angular/router
+MIT
+
+@angular/material/icon
+
+@angular/fire/firestore
+MIT
+
+@angular/fire
+MIT
+
+firebase/firestore
+
 @angular/material/form-field
 
 @angular/forms
 MIT
-
-@angular/material/icon
 
 core-js
 MIT

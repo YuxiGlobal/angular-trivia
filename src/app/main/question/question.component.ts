@@ -1,4 +1,4 @@
-import { Question } from './../question.interface';
+import { Question } from './../../models/question.interface';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
